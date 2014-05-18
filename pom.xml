@@ -1,6 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.mule.templates</groupId>
@@ -16,6 +15,7 @@
 		<mule.version>3.5.0-M4</mule.version>
 		<munit.version>3.5-M1</munit.version>
 		<junit.version>4.9</junit.version>
+		<sfdc.version>5.4.6</sfdc.version>
 		
 		<eclipsePluginVersion>2.8</eclipsePluginVersion>
 		<jdkName>JavaSE-1.6</jdkName>
@@ -54,7 +54,7 @@
 										</goals>
 									</pluginExecutionFilter>
 									<action>
-										<ignore></ignore>
+										<ignore/>
 									</action>
 								</pluginExecution>
 							</pluginExecutions>
@@ -217,9 +217,7 @@
 						<configuration>
 							<tasks>
 								<!-- Using an ant task to deflate cloveretl-engine.zip -->
-								<unzip
-									src="${project.build.testOutputDirectory}/cloveretl-engine.zip"
-									dest="${project.build.testOutputDirectory}" />
+								<unzip dest="${project.build.testOutputDirectory}" src="${project.build.testOutputDirectory}/cloveretl-engine.zip"/>
 							</tasks>
 						</configuration>
 						<goals>
@@ -332,6 +330,11 @@
 			<version>${mule.version}</version>
 			<scope>provided</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.mule.modules</groupId>
+			<artifactId>mule-module-siebel</artifactId>
+			<version>2.0.0-20140127.230730-6</version>
+		</dependency>
 		<!-- Xml configuration -->
 		<dependency>
 			<groupId>org.mule.modules</groupId>
@@ -429,6 +432,11 @@
 		</dependency>
 
 		<!-- Connectors -->
+		<dependency>
+			<groupId>org.mule.modules</groupId>
+			<artifactId>mule-module-sfdc</artifactId>
+			<version>${sfdc.version}</version>
+		</dependency>
 
 
 		<!-- for testing -->
@@ -496,7 +504,13 @@
 			<version>2.7.1</version>
 			<scope>test</scope>
 		</dependency>
-	</dependencies>
+	<dependency>
+            <groupId>org.mule.transports</groupId>
+            <artifactId>mule-transport-ssl</artifactId>
+            <version>${mule.version}</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
 
 	<repositories>
 		<repository>
@@ -508,6 +522,11 @@
 			<id>mulesoft-releases</id>
 			<name>MuleSoft Releases</name>
 			<url>http://repository.mulesoft.org/releases/</url>
+		</repository>
+		<repository>
+			<id>mulesoft-snapshots</id>
+			<name>MuleSoft Releases</name>
+			<url>https://repository-master.mulesoft.org/nexus/content/repositories/snapshots/</url>
 		</repository>
 		<repository>
 			<id>oss-sonatype-snapshots</id>
