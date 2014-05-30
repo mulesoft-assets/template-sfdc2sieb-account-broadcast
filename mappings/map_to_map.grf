@@ -27,6 +27,8 @@
 <Field __sourcePath="{}/Salesforce/Sic" containerType="SINGLE" label="Sic" name="Sic" type="string"/>
 <Field __sourcePath="{}/Salesforce/TickerSymbol" containerType="SINGLE" label="TickerSymbol" name="TickerSymbol" type="string"/>
 <Field __sourcePath="{}/Salesforce/Type" containerType="SINGLE" label="Type" name="Type" type="string"/>
+<Field __sourcePath="{}/Salesforce/AccountNumber" containerType="SINGLE" label="AccountNumber" name="AccountNumber1" type="string"/>
+<Field __sourcePath="{}/Salesforce/LastModifiedDate" containerType="SINGLE" label="LastModifiedDate" name="LastModifiedDate" type="string"/>
 </Record>
 </Metadata>
 <Metadata __index="0" __referenceCounter="1" __sourcePath="{}/Siebel" _dataStructure="OBJECT" _id="__id" _type="Output" id="0d778bfd-d112-41b5-972a-8e7a514f0820">
@@ -56,6 +58,20 @@
 <Field __sourcePath="{}/Siebel/SIC_x0020Code" containerType="SINGLE" label="SIC Code" name="SIC_Code" type="string"/>
 <Field __sourcePath="{}/Siebel/Ticker" containerType="SINGLE" label="Ticker" name="Ticker" type="string"/>
 <Field __sourcePath="{}/Siebel/Type" containerType="SINGLE" label="Type" name="Type" type="string"/>
+<Field __sourcePath="{}/Siebel/Account_x0020Code_x0020Type" containerType="SINGLE" label="Account Code Type" name="Account_Code_Type" type="string"/>
+<Field __sourcePath="{}/Siebel/Currency_x0020Code" containerType="SINGLE" label="Currency Code" name="Currency_Code" type="string"/>
+<Field __sourcePath="{}/Siebel/Customer_x0020Account_x0020Group" containerType="SINGLE" label="Customer Account Group" name="Customer_Account_Group" type="string"/>
+<Field __sourcePath="{}/Siebel/Group_x0020Type_x0020Code" containerType="SINGLE" label="Group Type Code" name="Group_Type_Code" type="string"/>
+<Field __sourcePath="{}/Siebel/Internal_x0020Org_x0020Flag" containerType="SINGLE" label="Internal Org Flag" name="Internal_Org_Flag" type="boolean"/>
+<Field __sourcePath="{}/Siebel/Master_x0020Account_x0020Id" containerType="SINGLE" label="Master Account Id" name="Master_Account_Id" type="integer"/>
+<Field __sourcePath="{}/Siebel/Party_x0020Type_x0020Code" containerType="SINGLE" label="Party Type Code" name="Party_Type_Code" type="string"/>
+<Field __sourcePath="{}/Siebel/Party_x0020UId" containerType="SINGLE" label="Party UId" name="Party_UId" type="string"/>
+<Field __sourcePath="{}/Siebel/Privacy_x0020Code" containerType="SINGLE" label="Privacy Code" name="Privacy_Code" type="string"/>
+<Field __sourcePath="{}/Siebel/Type" containerType="SINGLE" label="Type" name="Type1" type="string"/>
+<Field __sourcePath="{}/Siebel/Drug_x0020Spent_x0020Currency_x0020Code" containerType="SINGLE" label="Drug Spent Currency Code" name="Drug_Spent_Currency_Code" type="string"/>
+<Field __sourcePath="{}/Siebel/Account_x0020Number" containerType="SINGLE" label="Account Number" name="Account_Number1" type="string"/>
+<Field __sourcePath="{}/Siebel/Account_x0020Updated" containerType="SINGLE" label="Account Updated" name="Account_Updated" type="string"/>
+<Field __sourcePath="{}/Siebel/Ownership_x0020Type" containerType="SINGLE" label="Ownership Type" name="Ownership_Type" type="string"/>
 </Record>
 </Metadata>
 <Dictionary>
@@ -91,6 +107,8 @@
   <Mapping cloverField="Sic" trim="true" xpath="Sic"/>
   <Mapping cloverField="TickerSymbol" trim="true" xpath="TickerSymbol"/>
   <Mapping cloverField="Type" trim="true" xpath="Type"/>
+  <Mapping cloverField="AccountNumber1" trim="true" xpath="AccountNumber"/>
+  <Mapping cloverField="LastModifiedDate" trim="true" xpath="LastModifiedDate"/>
 </Context>
 ]]></attr>
 <attr name="_data_format"><![CDATA[MAP]]></attr>
@@ -123,7 +141,8 @@ output.Ship_To_State = input.ShippingState;
 output.Ship_To_Street_Address = input.ShippingStreet;
 output.SIC_Code = input.Sic;
 output.Ticker = input.TickerSymbol;
-output.Type = input.Type;]]></attr>
+output.Type = input.Type;
+output.Account_Number1 = input.AccountNumber1;]]></attr>
 </Node>
 <Node cacheInMemory="true" enabled="enabled" fileURL="dict:outputPayload" guiName="Map&lt;k,v&gt; WRITER" guiX="900" guiY="20" id="MAP_WRITER0" type="MAP_WRITER">
 <attr name="mapping"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
@@ -151,7 +170,20 @@ output.Type = input.Type;]]></attr>
   <clover:element clover:name="Ship To Street Address">$0.Ship_To_Street_Address</clover:element>
   <clover:element clover:name="SIC Code">$0.SIC_Code</clover:element>
   <Ticker>$0.Ticker</Ticker>
-  <Type>$0.Type</Type>
+  <Type>$0.Type$0.Type1</Type>
+  <clover:element clover:name="Account Code Type">$0.Account_Code_Type</clover:element>
+  <clover:element clover:name="Currency Code">$0.Currency_Code</clover:element>
+  <clover:element clover:name="Customer Account Group">$0.Customer_Account_Group</clover:element>
+  <clover:element clover:name="Group Type Code">$0.Group_Type_Code</clover:element>
+  <clover:element clover:name="Internal Org Flag">$0.Internal_Org_Flag</clover:element>
+  <clover:element clover:name="Master Account Id">$0.Master_Account_Id</clover:element>
+  <clover:element clover:name="Party Type Code">$0.Party_Type_Code</clover:element>
+  <clover:element clover:name="Party UId">$0.Party_UId</clover:element>
+  <clover:element clover:name="Privacy Code">$0.Privacy_Code</clover:element>
+  <clover:element clover:name="Drug Spent Currency Code">$0.Drug_Spent_Currency_Code</clover:element>
+  <clover:element clover:name="Account Number">$0.Account_Number1</clover:element>
+  <clover:element clover:name="Account Updated">$0.Account_Updated</clover:element>
+  <clover:element clover:name="Ownership Type">$0.Ownership_Type</clover:element>
 </Siebel>]]></attr>
 <attr name="_data_format"><![CDATA[MAP]]></attr>
 </Node>

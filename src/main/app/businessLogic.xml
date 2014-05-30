@@ -8,7 +8,7 @@
       xmlns="http://www.mulesoft.org/schema/mule/core"
       xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
       xmlns:spring="http://www.springframework.org/schema/beans"
-      version="EE-3.5.0"
+      version="EE-3.6.0"
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xsi:schemaLocation="http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/json/current/mule-json.xsd
 http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
@@ -28,6 +28,7 @@ http://www.mulesoft.org/schema/mule/siebel-io http://www.mulesoft.org/schema/mul
                 <enricher source="#[payload]" target="#[recordVars['siebelAccount']]" doc:name="Store payload into variable 'siebelAccount'">
                     <siebel:query-business-components config-ref="OracleSiebelBusinessObjects" businessObjectComponentType="Account.Account" doc:name="query Accounts from Siebel" searchExpression="[Name] = &quot;#[payload.Name]&quot;">
 		                <siebel:fields-to-retrieve>
+		                	<siebel:fields-to-retrieve>Name</siebel:fields-to-retrieve>
 		                	<siebel:fields-to-retrieve>Account Number</siebel:fields-to-retrieve>
 		                	<siebel:fields-to-retrieve>Annual Revenue</siebel:fields-to-retrieve>
 		                	<siebel:fields-to-retrieve>Source</siebel:fields-to-retrieve>
@@ -36,6 +37,16 @@ http://www.mulesoft.org/schema/mule/siebel-io http://www.mulesoft.org/schema/mul
 		                	<siebel:fields-to-retrieve>Employees</siebel:fields-to-retrieve>
 		                	<siebel:fields-to-retrieve>Parent Account Id</siebel:fields-to-retrieve>
 		                	<siebel:fields-to-retrieve>Home Page</siebel:fields-to-retrieve>
+		                	<siebel:fields-to-retrieve>Account Code Type</siebel:fields-to-retrieve>
+		                	<siebel:fields-to-retrieve>Currency Code</siebel:fields-to-retrieve>
+		                	<siebel:fields-to-retrieve>Customer Account Group</siebel:fields-to-retrieve>
+		                	<siebel:fields-to-retrieve>Group Type Code</siebel:fields-to-retrieve>
+		                	<siebel:fields-to-retrieve>Internal Org Flag</siebel:fields-to-retrieve>
+		                	<siebel:fields-to-retrieve>Master Account Id</siebel:fields-to-retrieve>
+		                	<siebel:fields-to-retrieve>Party Type Code</siebel:fields-to-retrieve>
+		                	<siebel:fields-to-retrieve>Party UId</siebel:fields-to-retrieve>
+		                	<siebel:fields-to-retrieve>Privacy Code</siebel:fields-to-retrieve>
+		                	<siebel:fields-to-retrieve>Type</siebel:fields-to-retrieve>
 		                </siebel:fields-to-retrieve>
                     </siebel:query-business-components>
                 </enricher>
@@ -45,7 +56,11 @@ http://www.mulesoft.org/schema/mule/siebel-io http://www.mulesoft.org/schema/mul
             </batch:step>
 			<batch:step name="upsertAccountsInSiebelStep">
 				<batch:commit size="200" doc:name="Batch Commit">
-                    <flow-ref name="commitAccountsFlow" doc:name="Trigger account commit"/>
+					<logger message="Accounts to update/create: #[payload]" level="INFO" doc:name="log Accounts to update/create" />
+					<siebel-io:execute-siebel-adapter config-ref="OracleSiebelBusinessObjects" integrationObject="Account.Account" method="UPSERT" doc:name="Oracle Siebel Integration Object">
+			            <siebel-io:input-properties ref="#[payload]"/>
+			        </siebel-io:execute-siebel-adapter>
+			        <logger message="Upsert result: #[payload]" level="ERROR" doc:name="log Result" />
 				</batch:commit>
 			</batch:step>
         </batch:process-records>
@@ -57,14 +72,4 @@ http://www.mulesoft.org/schema/mule/siebel-io http://www.mulesoft.org/schema/mul
 		</batch:on-complete>
     </batch:job>
 
-	<flow name="commitAccountsFlow" doc:name="commitAccountsFlow">
-		<logger message="Accounts to update/create: #[payload]" level="INFO" doc:name="log Accounts to update/create" />
-<!--        <siebel-io:execute-siebel-adapter config-ref="OracleSiebelIntegrationObjects" integrationObject="Account.Account" method="UPSERT" doc:name="Oracle Siebel Integration Objects"> -->
-<!--             <siebel-io:input-properties ref="#[payload]"/> -->
-<!--        </siebel-io:execute-siebel-adapter> -->
-	        <siebel:upsert-business-component config-ref="OracleSiebelBusinessObjects" businessObjectComponentType="Account.Account" doc:name="upsert Accounts to Siebel">
-	            <siebel:business-component-fields ref="#[payload]"/>
-	        </siebel:upsert-business-component>
-		<logger message="Upsert result: #[payload]" level="ERROR" doc:name="log Result" />
-	</flow>
 </mule>
