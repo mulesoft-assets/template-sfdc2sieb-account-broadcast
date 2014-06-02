@@ -29,39 +29,25 @@ http://www.mulesoft.org/schema/mule/siebel-io http://www.mulesoft.org/schema/mul
                     <siebel:query-business-components config-ref="OracleSiebelBusinessObjects" businessObjectComponentType="Account.Account" doc:name="query Accounts from Siebel" searchExpression="[Name] = &quot;#[payload.Name]&quot;">
 		                <siebel:fields-to-retrieve>
 		                	<siebel:fields-to-retrieve>Name</siebel:fields-to-retrieve>
-		                	<siebel:fields-to-retrieve>Account Number</siebel:fields-to-retrieve>
-		                	<siebel:fields-to-retrieve>Annual Revenue</siebel:fields-to-retrieve>
-		                	<siebel:fields-to-retrieve>Source</siebel:fields-to-retrieve>
-		                	<siebel:fields-to-retrieve>Account Updated</siebel:fields-to-retrieve>
-		                	<siebel:fields-to-retrieve>Name</siebel:fields-to-retrieve>
 		                	<siebel:fields-to-retrieve>Employees</siebel:fields-to-retrieve>
-		                	<siebel:fields-to-retrieve>Parent Account Id</siebel:fields-to-retrieve>
-		                	<siebel:fields-to-retrieve>Home Page</siebel:fields-to-retrieve>
-		                	<siebel:fields-to-retrieve>Account Code Type</siebel:fields-to-retrieve>
-		                	<siebel:fields-to-retrieve>Currency Code</siebel:fields-to-retrieve>
-		                	<siebel:fields-to-retrieve>Customer Account Group</siebel:fields-to-retrieve>
-		                	<siebel:fields-to-retrieve>Group Type Code</siebel:fields-to-retrieve>
-		                	<siebel:fields-to-retrieve>Internal Org Flag</siebel:fields-to-retrieve>
-		                	<siebel:fields-to-retrieve>Master Account Id</siebel:fields-to-retrieve>
-		                	<siebel:fields-to-retrieve>Party Type Code</siebel:fields-to-retrieve>
-		                	<siebel:fields-to-retrieve>Party UId</siebel:fields-to-retrieve>
-		                	<siebel:fields-to-retrieve>Privacy Code</siebel:fields-to-retrieve>
-		                	<siebel:fields-to-retrieve>Type</siebel:fields-to-retrieve>
+		                	<siebel:fields-to-retrieve>Street Address</siebel:fields-to-retrieve>
+		                	<siebel:fields-to-retrieve>City</siebel:fields-to-retrieve>
 		                </siebel:fields-to-retrieve>
                     </siebel:query-business-components>
                 </enricher>
             </batch:step>
             <batch:step name="DataTransformationStep">
-                <data-mapper:transform config-ref="DataMapper" doc:name="Map Salesforce Account to Siebel Account"/>
+                <data-mapper:transform config-ref="DataMapper"  doc:name="Map Salesforce Account to Siebel Account"/>
             </batch:step>
 			<batch:step name="upsertAccountsInSiebelStep">
 				<batch:commit size="200" doc:name="Batch Commit">
-					<logger message="Accounts to update/create: #[payload]" level="INFO" doc:name="log Accounts to update/create" />
-					<siebel-io:execute-siebel-adapter config-ref="OracleSiebelBusinessObjects" integrationObject="Account.Account" method="UPSERT" doc:name="Oracle Siebel Integration Object">
-			            <siebel-io:input-properties ref="#[payload]"/>
-			        </siebel-io:execute-siebel-adapter>
-			        <logger message="Upsert result: #[payload]" level="ERROR" doc:name="log Result" />
-				</batch:commit>
+			        <set-payload value="#[payload[0]]" doc:name="Set Payload as Map"/>
+			        <logger message="Accounts to update/create: #[payload]" level="INFO" doc:name="log Accounts to update/create"/>
+			        <siebel:upsert-business-component config-ref="OracleSiebelBusinessObjects" businessObjectComponentType="Account.Account" doc:name="Oracle Siebel Business Object">
+			            <siebel:business-component-fields ref="#[payload]"/>
+			        </siebel:upsert-business-component>
+			        <logger message="Upsert result: #[payload]" level="ERROR" doc:name="log Result"/>
+   				</batch:commit>
 			</batch:step>
         </batch:process-records>
 		<batch:on-complete>
