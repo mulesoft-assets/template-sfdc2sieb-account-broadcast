@@ -26,7 +26,7 @@ Here you should not:
     	<poll doc:name="fireup Account synchronization">
             <fixed-frequency-scheduler frequency="${polling.frequency}" startDelay="${polling.start.delay}" />
             <watermark variable="lastQueryDate" default-expression="${watermark.default.expression}" selector="MAX" selector-expression="#[payload.LastModifiedDate]"/>
-             <sfdc:query config-ref="Salesforce" doc:name="query Accounts from Salesforce" query="dsql:SELECT AccountNumber, AccountSource, AnnualRevenue, BillingCity, BillingCountry, BillingPostalCode, BillingState, BillingStreet, Description, Fax, Id, Industry, LastModifiedById, LastModifiedDate, Name, NumberOfEmployees, OwnerId, Ownership, ParentId, Phone, Rating, ShippingCity, ShippingCountry, ShippingPostalCode, ShippingState, ShippingStreet, Sic, SicDesc, Site, TickerSymbol, Type, Website FROM Account WHERE LastModifiedDate &gt; #[lastQueryDate]" fetchSize="200">
+             <sfdc:query config-ref="Salesforce" doc:name="query Accounts from Salesforce" query="dsql:SELECT BillingCity, BillingStreet, LastModifiedDate, Name, NumberOfEmployees FROM Account WHERE LastModifiedDate &gt; #[lastQueryDate]" fetchSize="200">
             </sfdc:query>
         </poll>
         <logger message="#[payload]" level="INFO" doc:name="log created/updated Accounts"/>

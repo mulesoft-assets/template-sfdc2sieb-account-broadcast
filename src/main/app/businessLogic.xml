@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:siebel-io="http://www.mulesoft.org/schema/mule/siebel-io" xmlns:json="http://www.mulesoft.org/schema/mule/json"
+<mule xmlns:json="http://www.mulesoft.org/schema/mule/json"
 	xmlns:siebel="http://www.mulesoft.org/schema/mule/siebel" xmlns:data-mapper="http://www.mulesoft.org/schema/mule/ee/data-mapper" xmlns:db="http://www.mulesoft.org/schema/mule/db"
 	  xmlns:batch="http://www.mulesoft.org/schema/mule/batch"
 	  xmlns:sfdc="http://www.mulesoft.org/schema/mule/sfdc"
@@ -18,8 +18,7 @@ http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/m
 http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/batch/current/mule-batch.xsd
 http://www.mulesoft.org/schema/mule/sfdc http://www.mulesoft.org/schema/mule/sfdc/current/mule-sfdc.xsd
 http://www.mulesoft.org/schema/mule/siebel http://www.mulesoft.org/schema/mule/siebel/2.0/mule-siebel.xsd
-http://www.mulesoft.org/schema/mule/ee/data-mapper http://www.mulesoft.org/schema/mule/ee/data-mapper/current/mule-data-mapper.xsd
-http://www.mulesoft.org/schema/mule/siebel-io http://www.mulesoft.org/schema/mule/siebel-io/current/mule-siebel-io.xsd">
+http://www.mulesoft.org/schema/mule/ee/data-mapper http://www.mulesoft.org/schema/mule/ee/data-mapper/current/mule-data-mapper.xsd">
 
     <batch:job name="syncAccountsBatch">
         <batch:threading-profile poolExhaustedAction="WAIT"/>
@@ -28,6 +27,7 @@ http://www.mulesoft.org/schema/mule/siebel-io http://www.mulesoft.org/schema/mul
                 <enricher source="#[payload]" target="#[recordVars['siebelAccount']]" doc:name="Store payload into variable 'siebelAccount'">
                     <siebel:query-business-components config-ref="OracleSiebelBusinessObjects" businessObjectComponentType="Account.Account" doc:name="query Accounts from Siebel" searchExpression="[Name] = &quot;#[payload.Name]&quot;">
 		                <siebel:fields-to-retrieve>
+		                	<siebel:fields-to-retrieve>Id</siebel:fields-to-retrieve>
 		                	<siebel:fields-to-retrieve>Name</siebel:fields-to-retrieve>
 		                	<siebel:fields-to-retrieve>Employees</siebel:fields-to-retrieve>
 		                	<siebel:fields-to-retrieve>Street Address</siebel:fields-to-retrieve>
@@ -35,6 +35,13 @@ http://www.mulesoft.org/schema/mule/siebel-io http://www.mulesoft.org/schema/mul
 		                </siebel:fields-to-retrieve>
                     </siebel:query-business-components>
                 </enricher>
+					<expression-component
+						doc:name="prepare for upsert"><![CDATA[// setup ID
+	if (!(recordVars['siebelAccount'] instanceof NullPayload) && recordVars['siebelAccount'].size() >0) {
+		// Add siebel ID as it is an update
+	    payload.put('SiebelId', recordVars['siebelAccount'].get(0).get('Id'))
+	}
+	]]></expression-component>
             </batch:step>
             <batch:step name="DataTransformationStep">
                 <data-mapper:transform config-ref="DataMapper"  doc:name="Map Salesforce Account to Siebel Account"/>
