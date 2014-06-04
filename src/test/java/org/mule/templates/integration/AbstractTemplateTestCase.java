@@ -7,8 +7,13 @@ import java.util.Properties;
 
 import org.junit.Rule;
 import org.mule.api.config.MuleProperties;
+import org.mule.context.notification.NotificationException;
 import org.mule.tck.junit4.FunctionalTestCase;
 import org.mule.tck.junit4.rule.DynamicPort;
+import org.mule.tck.probe.PollingProber;
+import org.mule.tck.probe.Prober;
+import org.mule.templates.test.utils.ListenerProbe;
+import org.mule.templates.test.utils.PipelineSynchronizeListener;
 
 /**
  * This is the base test class for Anypoint Templates integration tests.
@@ -20,7 +25,11 @@ public class AbstractTemplateTestCase extends FunctionalTestCase {
 	private static final String TEST_FLOWS_FOLDER_PATH = "./src/test/resources/flows/";
 	private static final String MULE_DEPLOY_PROPERTIES_PATH = "./src/main/app/mule-deploy.properties";
 
-	protected static final String TEMPLATE_NAME = "opportunity-aggregation";
+	protected static final String TEMPLATE_NAME = "account-broadcast";
+	protected static final String POLL_FLOW_NAME = "triggerFlow";
+
+	protected final Prober pollProber = new PollingProber(60000, 1000l);
+	protected final PipelineSynchronizeListener pipelineListener = new PipelineSynchronizeListener(POLL_FLOW_NAME);
 
 	@Rule
 	public DynamicPort port = new DynamicPort("http.port");
@@ -67,6 +76,16 @@ public class AbstractTemplateTestCase extends FunctionalTestCase {
 		properties.put(MuleProperties.APP_HOME_DIRECTORY_PROPERTY, graphFile.getAbsolutePath());
 
 		return properties;
+	}
+
+	protected void registerListeners() throws NotificationException {
+		muleContext.registerListener(pipelineListener);
+	}
+
+	protected void waitForPollToRun() {
+		System.out.println("Waiting for poll to run ones...");
+		pollProber.check(new ListenerProbe(pipelineListener));
+		System.out.println("Poll flow done");
 	}
 
 	protected String buildUniqueName(String templateName, String name) {
