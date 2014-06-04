@@ -22,13 +22,13 @@ Please review the terms of the license before downloading and using this templat
 
 As a Salesforce admin I want to syncronize Accounts between Salesfoce and Siebel.
 
-This Template should serve as a foundation for setting an online sync of Accounts from one SalesForce instance to Siebel. Everytime there is a new Account or a change in an already existing one, the integration will poll for changes in SalesForce source instance and it will be responsible for updating the Account on the target Siebel instance.
+This Template should serve as a foundation for setting an online sync of Accounts from one Salesforce instance to Siebel. Everytime there is a new Account or a change in an already existing one, the integration will poll for changes in Salesforce source instance and it will be responsible for updating the Account on the target Siebel instance.
 
 Requirements have been set not only to be used as examples, but also to establish a starting point to adapt your integration to your requirements.
 
 As implemented, this Template leverage the [Batch Module](http://www.mulesoft.org/documentation/display/current/Batch+Processing).
 The batch job is divided in Input, Process and On Complete stages.
-The integration is triggered by a poll defined in the flow that is going to trigger the application, querying newest SalesForce updates/creations matching a filter criteria and executing the batch job.
+The integration is triggered by a poll defined in the flow that is going to trigger the application, querying newest Salesforce updates/creations matching a filter criteria and executing the batch job.
 During the Process stage, each Salesforce Account will be filtered depending on, if it has an existing matching account in the Siebel. The last step of the Process stage will group the Accounts and insert/update them in Siebel. Finally during the On Complete stage the Template will logoutput statistics data into the console.
 
 # Run it! <a name="runit"/>
@@ -71,7 +71,7 @@ In order to use this Anypoint Template you need to configure properties (Credent
 + watermark.default.expression `YESTERDAY`
 
 
-### SalesForce Connector configuration
+### Salesforce Connector configuration
 + sfdc.username `bob.dylan@orga`
 + sfdc.password `DylanPassword123`
 + sfdc.securityToken `avsfwCUl7apQs56Xq2AKi3X`
@@ -85,18 +85,15 @@ In order to use this Anypoint Template you need to configure properties (Credent
 + sieb.objectManager=`objectManager`
 + sieb.port=`2321`
 
-
-If it is required to connect to a different Database there should be provided the jar for the library and changed the value of that field in the connector.
-
 # API Calls <a name="apicalls"/>
 
-SalesForce imposes limits on the number of API Calls that can be made. Therefore calculating this amount may be an important factor to consider. Account Broadcast Template calls to the API can be calculated using the formula:
+Salesforce imposes limits on the number of API Calls that can be made. Therefore calculating this amount may be an important factor to consider. Account Broadcast Template calls to the API can be calculated using the formula:
 
 ***1 + X + X / 200***
 
-Being ***X*** the number of Leads to be synchronized on each run. 
+Being ***X*** the number of Accounts to be synchronized on each run. 
 
-The division by ***200*** is because, by default, Leads are gathered in groups of 200 for each Upsert API Call in the commit step. Also consider that this calls are executed repeatedly every polling cycle.	
+The division by ***200*** is because, by default, Accounts are gathered in groups of 200 for each Upsert API Call in the commit step. Also consider that this calls are executed repeatedly every polling cycle.	
 
 For instance if 10 records are fetched from origin instance, then 12 api calls will be made (1 + 10 + 1).
 
@@ -122,17 +119,15 @@ In the visual editor they can be found on the *Global Element* tab.
 
 
 ## endpoints.xml<a name="inbpundendpointsxml"/>
-This is the file where you will found the inbound and outbound sides of your integration app.
-It is intented to define the application API.
-...
+This is file is conformed by a Flow containing the Poll that will periodically query Sales Force for updated/created Leads that meet the defined criteria in the query. And then executing the batch job process with the query results.
 
 ## businessLogic.xml<a name="businesslogicxml"/>
 Functional aspect of the Anypoint Template is implemented on this XML, directed by a batch job that will be responsible for creations/updates. The severeal message processors constitute four high level actions that fully implement the logic of this Anypoint Template:
 
 1. Job execution is invoked from triggerFlow (endpoints.xml) everytime there is a new query executed asking for created/updated Accounts.
-2. During the Process stage, each SalesForce Account will be filtered depending on, if it has an existing matching Account in the Siebel.
+2. During the Process stage, each Salesforce Account will be filtered depending on, if it has an existing matching Account in the Siebel.
 3. The last step of the Process stage will group the Accounts and create/update them in Siebel.
-Finally during the On Complete stage the Anypoint Template will logoutput statistics data into the console.
+Finally during the On Complete stage the Anypoint Template will log output statistics data into the console.
 
 
 ## errorHandling.xml<a name="errorhandlingxml"/>
