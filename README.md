@@ -56,8 +56,7 @@ Complete all properties in one of the property files, for example in [mule.prod.
 ## Running on CloudHub <a name="runoncloudhub"/>
 
 While [creating your application on CloudHub](http://www.mulesoft.org/documentation/display/current/Hello+World+on+CloudHub) (Or you can do it later as a next step), you need to go to Deployment > Advanced to set all environment variables detailed in **Properties to be configured** as well as the **mule.env**. 
-
-Once your app is all set and started, supposing you choose as domain name `template-sfdc2sieb-account-broadcast` to trigger the use case you just need to hit `http://template-sfdc2sieb-account-broadcast.cloudhub.io/synccontacts`.
+Follow other steps defined [here](#runonpremise) and once your app is all set and started, there is no need to do anything else. Every time a Account is created or modified, it will be automatically synchronised to supplied database table.
 
 ### Deploying your Anypoint Template on CloudHub <a name="deployingyouranypointtemplateoncloudhub"/>
 Mule Studio provides you with really easy way to deploy your Anypoint Template directly to CloudHub, for the specific steps to do so please check this [link](http://www.mulesoft.org/documentation/display/current/Deploying+Mule+Applications#DeployingMuleApplications-DeploytoCloudHub)
@@ -119,7 +118,7 @@ In the visual editor they can be found on the *Global Element* tab.
 
 
 ## endpoints.xml<a name="inbpundendpointsxml"/>
-This is file is conformed by a Flow containing the Poll that will periodically query Sales Force for updated/created Leads that meet the defined criteria in the query. And then executing the batch job process with the query results.
+This is file is conformed by a Flow containing the Poll that will periodically query Salesforce for updated/created Accounts that meet the defined criteria in the query. And then executing the batch job process with the query results.
 
 ## businessLogic.xml<a name="businesslogicxml"/>
 Functional aspect of the Anypoint Template is implemented on this XML, directed by a batch job that will be responsible for creations/updates. The severeal message processors constitute four high level actions that fully implement the logic of this Anypoint Template:
