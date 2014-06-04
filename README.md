@@ -1,5 +1,5 @@
 
-# Anypoint Template: template-sfdc2sieb-account-broadcast
+# Anypoint Template: Salesforce to Siebel Account Broadcast
 
 + [License Agreement](#licenseagreement)
 + [Use Case](#usecase)
@@ -20,10 +20,20 @@ Please review the terms of the license before downloading and using this templat
 
 # Use Case <a name="usecase"/>
 
+As a Salesforce admin I want to syncronize Accounts between Salesfoce and Siebel.
+
+This Template should serve as a foundation for setting an online sync of Accounts from one Salesforce instance to Siebel. Everytime there is a new Account or a change in an already existing one, the integration will poll for changes in Salesforce source instance and it will be responsible for updating the Account on the target Siebel instance.
+
+Requirements have been set not only to be used as examples, but also to establish a starting point to adapt your integration to your requirements.
+
+As implemented, this Template leverage the [Batch Module](http://www.mulesoft.org/documentation/display/current/Batch+Processing).
+The batch job is divided in Input, Process and On Complete stages.
+The integration is triggered by a poll defined in the flow that is going to trigger the application, querying newest Salesforce updates/creations matching a filter criteria and executing the batch job.
+During the Process stage, each Salesforce Account will be filtered depending on, if it has an existing matching account in the Siebel. The last step of the Process stage will group the Accounts and insert/update them in Siebel. Finally during the On Complete stage the Template will logoutput statistics data into the console.
 
 # Run it! <a name="runit"/>
 
-Simple steps to get template-sfdc2sieb-account-broadcast running
+Simple steps to get template Salesforce to Siebel Account Broadcast running
 
 ## Running on premise <a name="runonopremise"/>
 
@@ -46,15 +56,45 @@ Complete all properties in one of the property files, for example in [mule.prod.
 ## Running on CloudHub <a name="runoncloudhub"/>
 
 While [creating your application on CloudHub](http://www.mulesoft.org/documentation/display/current/Hello+World+on+CloudHub) (Or you can do it later as a next step), you need to go to Deployment > Advanced to set all environment variables detailed in **Properties to be configured** as well as the **mule.env**. 
-
-Once your app is all set and started, supposing you choose as domain name `template-sfdc2sieb-account-broadcast` to trigger the use case you just need to hit `http://template-sfdc2sieb-account-broadcast.cloudhub.io/synccontacts` and report will be sent to the emails configured.
+Follow other steps defined [here](#runonpremise) and once your app is all set and started, there is no need to do anything else. Every time a Account is created or modified, it will be automatically synchronised to supplied database table.
 
 ### Deploying your Anypoint Template on CloudHub <a name="deployingyouranypointtemplateoncloudhub"/>
 Mule Studio provides you with really easy way to deploy your Anypoint Template directly to CloudHub, for the specific steps to do so please check this [link](http://www.mulesoft.org/documentation/display/current/Deploying+Mule+Applications#DeployingMuleApplications-DeploytoCloudHub)
 
 ## Properties to be configured (With examples)<a name="propertiestobeconfigured"/>
 In order to use this Anypoint Template you need to configure properties (Credentials, configurations, etc.) either in properties file or in CloudHub as Environment Variables. Detail list with examples:
-...
+
+### Application configuration
++ polling.frequency `60000`
++ polling.start.delay `1000`
++ watermark.default.expression `YESTERDAY`
+
+
+### Salesforce Connector configuration
++ sfdc.username `bob.dylan@orga`
++ sfdc.password `DylanPassword123`
++ sfdc.securityToken `avsfwCUl7apQs56Xq2AKi3X`
++ sfdc.url `https://login.salesforce.com/services/Soap/u/28.0`
+
+### # Oracle Siebel Connector configuration
++ sieb.user=`user`
++ sieb.password=`secret`
++ sieb.server=`server`
++ sieb.serverName=`serverName`
++ sieb.objectManager=`objectManager`
++ sieb.port=`2321`
+
+# API Calls <a name="apicalls"/>
+
+Salesforce imposes limits on the number of API Calls that can be made. Therefore calculating this amount may be an important factor to consider. Account Broadcast Template calls to the API can be calculated using the formula:
+
+***1 + X + X / 200***
+
+Being ***X*** the number of Accounts to be synchronized on each run. 
+
+The division by ***200*** is because, by default, Accounts are gathered in groups of 200 for each Upsert API Call in the commit step. Also consider that this calls are executed repeatedly every polling cycle.	
+
+For instance if 10 records are fetched from origin instance, then 12 api calls will be made (1 + 10 + 1).
 
 # Customize It!<a name="customizeit"/>
 This brief guide intends to give a high level idea of how this Anypoint Template is built and how you can change it according to your needs.
@@ -77,21 +117,20 @@ Of course if you want to do core changes to the logic you will probably need to 
 In the visual editor they can be found on the *Global Element* tab.
 
 
-## indboundEndpoints.xml<a name="inbpundendpointsxml"/>
-This is the file where you will found the inbound and outbound sides of your integration app.
-It is intented to define the application API.
-...
+## endpoints.xml<a name="inbpundendpointsxml"/>
+This is file is conformed by a Flow containing the Poll that will periodically query Salesforce for updated/created Accounts that meet the defined criteria in the query. And then executing the batch job process with the query results.
 
 ## businessLogic.xml<a name="businesslogicxml"/>
-This file holds the functional aspect of the Anypoint Template, directed by one flow responsible of conducting the business logic.
-...
+Functional aspect of the Anypoint Template is implemented on this XML, directed by a batch job that will be responsible for creations/updates. The severeal message processors constitute four high level actions that fully implement the logic of this Anypoint Template:
+
+1. Job execution is invoked from triggerFlow (endpoints.xml) everytime there is a new query executed asking for created/updated Accounts.
+2. During the Process stage, each Salesforce Account will be filtered depending on, if it has an existing matching Account in the Siebel.
+3. The last step of the Process stage will group the Accounts and create/update them in Siebel.
+Finally during the On Complete stage the Anypoint Template will log output statistics data into the console.
 
 
 ## errorHandling.xml<a name="errorhandlingxml"/>
-This is the right place to handle how your integration will react depending on the different exceptions. 
-This file holds a [Choice Exception Strategy](http://www.mulesoft.org/documentation/display/current/Choice+Exception+Strategy) that is referenced by the main flow in the business logic.
-...
-
+This is the right place to handle how your integration will react depending on the different exceptions. Contains a [Catch Exception Strategy](http://www.mulesoft.org/documentation/display/current/Catch+Exception+Strategy) that is only Logging the exception thrown (If so). As you imagine, this is the right place to handle how your integration will react depending on the different exceptions.
 
 ## Testing the Anypoint Template <a name="testingtheanypointtemplate"/>
 
