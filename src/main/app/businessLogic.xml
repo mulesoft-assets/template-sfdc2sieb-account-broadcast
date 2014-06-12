@@ -47,14 +47,11 @@ http://www.mulesoft.org/schema/mule/ee/data-mapper http://www.mulesoft.org/schem
                 <data-mapper:transform config-ref="DataMapper"  doc:name="Map Salesforce Account to Siebel Account"/>
             </batch:step>
 			<batch:step name="upsertAccountsInSiebelStep">
-				<batch:commit size="200" doc:name="Batch Commit">
-			        <set-payload value="#[payload[0]]" doc:name="Set Payload as Map"/>
-			        <logger message="Accounts to update/create: #[payload]" level="INFO" doc:name="log Accounts to update/create"/>
-			        <siebel:upsert-business-component config-ref="OracleSiebelBusinessObjects" businessObjectComponentType="Account.Account" doc:name="Oracle Siebel Business Object">
-			            <siebel:business-component-fields ref="#[payload]"/>
-			        </siebel:upsert-business-component>
-			        <logger message="Upsert result: #[payload]" level="ERROR" doc:name="log Result"/>
-   				</batch:commit>
+		        <logger message="Accounts to update/create: #[payload]" level="INFO" doc:name="log Accounts to update/create"/>
+		        <siebel:upsert-business-component config-ref="OracleSiebelBusinessObjects" businessObjectComponentType="Account.Account" doc:name="Oracle Siebel Business Object">
+		            <siebel:business-component-fields ref="#[payload]"/>
+		        </siebel:upsert-business-component>
+		        <logger message="Upsert result: #[payload]" level="ERROR" doc:name="log Result"/>
 			</batch:step>
         </batch:process-records>
 		<batch:on-complete>
