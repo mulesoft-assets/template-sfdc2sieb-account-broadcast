@@ -3,7 +3,6 @@
 <mule xmlns:context="http://www.springframework.org/schema/context" 
 xmlns="http://www.mulesoft.org/schema/mule/core" 
 xmlns:data-mapper="http://www.mulesoft.org/schema/mule/ee/data-mapper"
-xmlns:siebel-io="http://www.mulesoft.org/schema/mule/siebel-io"
 xmlns:siebel="http://www.mulesoft.org/schema/mule/siebel"
 xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" 
 xmlns:spring="http://www.springframework.org/schema/beans" 
@@ -14,7 +13,6 @@ xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.sprin
 http://www.mulesoft.org/schema/mule/sfdc http://www.mulesoft.org/schema/mule/sfdc/current/mule-sfdc.xsd
 http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/ee/data-mapper http://www.mulesoft.org/schema/mule/ee/data-mapper/current/mule-data-mapper.xsd
-http://www.mulesoft.org/schema/mule/siebel-io http://www.mulesoft.org/schema/mule/siebel-io/current/mule-siebel-io.xsd
 http://www.mulesoft.org/schema/mule/siebel http://www.mulesoft.org/schema/mule/siebel/2.0/mule-siebel.xsd
 http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-current.xsd">
 
@@ -32,9 +30,5 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
     <siebel:config name="OracleSiebelBusinessObjects" user="${sieb.user}" password="${sieb.password}" server="${sieb.server}" serverName="${sieb.serverName}" objectManager="${sieb.objectManager}" doc:name="Oracle Siebel Business Objects" doc:description="Destination Oracle Siebel Business Objects instance. This is the destination organization, where accounts will be migrated to." port="${sieb.port}">
         <siebel:connection-pooling-profile initialisationPolicy="INITIALISE_ONE" exhaustedAction="WHEN_EXHAUSTED_GROW"/>
     </siebel:config>
-
-    <siebel-io:config name="OracleSiebelIntegrationObjects" integrationObjectUser="${sieb.user}" integrationObjectPassword="${sieb.password}" integrationObjectServer="${sieb.server}" integrationObjectServerName="${sieb.serverName}" integrationObjectObjectManager="${sieb.objectManager}" doc:name="Oracle Siebel Integration Objects">
-        <siebel-io:connection-pooling-profile initialisationPolicy="INITIALISE_ONE" exhaustedAction="WHEN_EXHAUSTED_GROW"/>
-    </siebel-io:config>
 
 </mule>
