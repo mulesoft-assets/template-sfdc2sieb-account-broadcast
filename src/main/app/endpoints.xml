@@ -30,6 +30,6 @@ Here you should not:
             </sfdc:query>
         </poll>
         <logger message="#[payload]" level="INFO" doc:name="log created/updated Accounts"/>
-        <batch:execute name="syncAccountsBatch" doc:name="trigger syncAccountsBatch"/>
+        <flow-ref name="mainFlow" doc:name="Trigger mainFlow"/>
     </flow>
 </mule>
