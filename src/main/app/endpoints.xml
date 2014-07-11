@@ -23,13 +23,12 @@ Here you should:
 Here you should not: 
 	* Run validations against external systems
 	* Choose flow of you application based on input parameters">
-    	<poll doc:name="fireup Account synchronization">
+    	<poll doc:name="fireup account synchronization">
             <fixed-frequency-scheduler frequency="${polling.frequency}" startDelay="${polling.start.delay}" />
             <watermark variable="lastQueryDate" default-expression="${watermark.default.expression}" selector="MAX" selector-expression="#[payload.LastModifiedDate]"/>
-             <sfdc:query config-ref="Salesforce" doc:name="query Accounts from Salesforce" query="dsql:SELECT BillingCity, BillingStreet, LastModifiedDate, Name, NumberOfEmployees FROM Account WHERE LastModifiedDate &gt; #[lastQueryDate]" fetchSize="200">
+             <sfdc:query config-ref="Salesforce" doc:name="query accounts from Salesforce" query="dsql:SELECT BillingCity, BillingStreet, LastModifiedDate, Name, NumberOfEmployees FROM Account WHERE LastModifiedDate &gt; #[lastQueryDate]" fetchSize="200">
             </sfdc:query>
         </poll>
-        <logger message="#[payload]" level="INFO" doc:name="log created/updated Accounts"/>
-        <flow-ref name="mainFlow" doc:name="Trigger mainFlow"/>
+        <flow-ref name="mainFlow" doc:name="call mainFlow"/>
     </flow>
 </mule>

@@ -8,7 +8,7 @@
       xmlns="http://www.mulesoft.org/schema/mule/core"
       xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
       xmlns:spring="http://www.springframework.org/schema/beans"
-      version="EE-3.6.0"
+      version="EE-3.5.0"
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xsi:schemaLocation="http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/json/current/mule-json.xsd
 http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
@@ -44,14 +44,13 @@ http://www.mulesoft.org/schema/mule/ee/data-mapper http://www.mulesoft.org/schem
 	]]></expression-component>
             </batch:step>
             <batch:step name="DataTransformationStep">
-                <data-mapper:transform config-ref="DataMapper"  doc:name="Map Salesforce Account to Siebel Account"/>
+                <data-mapper:transform config-ref="DataMapper"  doc:name="transform Salesforce account to Siebel account"/>
             </batch:step>
 			<batch:step name="upsertAccountsInSiebelStep">
-		        <logger message="Accounts to update/create: #[payload]" level="INFO" doc:name="log Accounts to update/create"/>
-		        <siebel:upsert-business-component config-ref="OracleSiebelBusinessObjects" businessObjectComponentType="Account.Account" doc:name="Oracle Siebel Business Object">
+		        <siebel:upsert-business-component config-ref="OracleSiebelBusinessObjects" businessObjectComponentType="Account.Account" doc:name="upsert account in Siebel">
 		            <siebel:business-component-fields ref="#[payload]"/>
 		        </siebel:upsert-business-component>
-		        <logger message="Upsert result: #[payload]" level="ERROR" doc:name="log Result"/>
+		        <logger message="Upsert result: #[payload]" level="ERROR" doc:name="log Siebel response"/>
 			</batch:step>
         </batch:process-records>
 		<batch:on-complete>
@@ -63,7 +62,7 @@ http://www.mulesoft.org/schema/mule/ee/data-mapper http://www.mulesoft.org/schem
     </batch:job>
 
     <flow name="mainFlow" doc:name="mainFlow">
-        <batch:execute name="syncAccountsBatch" doc:name="Batch Execute"/>
-        <exception-strategy ref="defaultChoiceExceptionStrategy" doc:name="Reference Exception Strategy"/>
+        <batch:execute name="syncAccountsBatch" doc:name="trigger syncAccountsBatch"/>
+        <exception-strategy ref="defaultChoiceExceptionStrategy" doc:name="catch Exception and call defaultChoiceExceptionStrategy"/>
     </flow>
 </mule>
