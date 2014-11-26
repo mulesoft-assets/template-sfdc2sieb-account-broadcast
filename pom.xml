@@ -15,7 +15,7 @@
 
 	<properties>
 		<sfdc.version>5.4.7</sfdc.version>
-		<siebel.version>1.0.0</siebel.version>
+		<siebel.version>2.0.0</siebel.version>
 	</properties>
 
 	<scm>
@@ -48,7 +48,6 @@
 	</build>
 
 	<dependencies>
-		
 		<dependency>
 			<groupId>org.mule.modules</groupId>
 			<artifactId>mule-module-sfdc</artifactId>
@@ -59,6 +58,18 @@
             <artifactId>mule-module-siebel</artifactId>
 			<version>${siebel.version}</version>
         </dependency>
+        <dependency>
+			<groupId>siebel</groupId>
+			<artifactId>siebel</artifactId>
+			<version>8.1.1.11</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>siebel</groupId>
+			<artifactId>siebel-ji-enu</artifactId>
+			<version>8.1.1.11</version>
+			<scope>test</scope>
+		</dependency>
     </dependencies>
 
 	<repositories>
@@ -78,6 +89,12 @@
 			<id>mule-ee-snapshots</id>
 			<name>MuleEE Releases Repository</name>
 			<url>https://repository-master.mulesoft.org/nexus/content/repositories/ci-snapshots/</url>
+		</repository>
+		<repository>
+			<id>mule-ee-thirdparty</id>
+			<name>MuleSoft Thirdparty Repository</name>
+			<url>https://repository.mulesoft.org/nexus/content/repositories/thirdparty/</url>
+			<layout>default</layout>
 		</repository>
 	</repositories>
 
