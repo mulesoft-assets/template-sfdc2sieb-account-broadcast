@@ -26,7 +26,7 @@ import com.mulesoft.module.batch.BatchTestHelper;
 
 /**
  * The objective of this class is to validate the correct behavior of the flows
- * for this Anypoint Tempalte that make calls to external systems.
+ * for this Anypoint Template that make calls to external systems.
  * 
  */
 public class BusinessLogicIT extends AbstractTemplateTestCase {
@@ -45,10 +45,10 @@ public class BusinessLogicIT extends AbstractTemplateTestCase {
 	@BeforeClass
 	public static void init() {
 		System.setProperty("page.size", "1000");
-		System.setProperty("polling.frequency", "10000");
-		System.setProperty("polling.start.delay", "1000");
+		System.setProperty("poll.frequencyMillis", "45000");
+		System.setProperty("poll.startDelayMillis", "100");
 		System.setProperty("watermark.default.expression",
-				"#[groovy: new Date(System.currentTimeMillis() - 10000).format(\"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'\", TimeZone.getTimeZone('UTC'))]");
+				"#[groovy: new Date(System.currentTimeMillis() - 30000).format(\"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'\", TimeZone.getTimeZone('BDST'))]");
 	}
 
 	@Before
@@ -91,7 +91,7 @@ public class BusinessLogicIT extends AbstractTemplateTestCase {
 		helper.awaitJobTermination(TIMEOUT * 1000, 500);
 		helper.assertJobWasSuccessful();
 
-		// Execute selectAccountFromSiebel sublow
+		// Execute selectAccountFromSiebel subflow
 		final MuleEvent event = selectAccountFromSiebelFlow.process(getTestEvent(account, MessageExchangePattern.REQUEST_RESPONSE));
 		final List<Map<String, Object>> payload = (List<Map<String, Object>>) event.getMessage().getPayload();
 

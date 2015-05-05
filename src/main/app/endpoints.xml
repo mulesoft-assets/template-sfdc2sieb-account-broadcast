@@ -6,7 +6,7 @@
       xmlns="http://www.mulesoft.org/schema/mule/core"
       xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
       xmlns:spring="http://www.springframework.org/schema/beans"
-      version="EE-3.5.0"
+      version="EE-3.6.1"
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xsi:schemaLocation="http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/batch/current/mule-batch.xsd
 http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
@@ -16,7 +16,7 @@ http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/htt
 
 	<!-- 	In this file you should declare all your inbound endpoints and from here controll the access to your application -->
 
-    <flow name="triggerFlow" processingStrategy="synchronous"   doc:name="triggerFlow" doc:description="This is the simpliest entry point to start the excecution of your Anypoint Template
+    <flow name="triggerFlow" processingStrategy="synchronous"    doc:description="This is the simpliest entry point to start the excecution of your Anypoint Template
 Here you should: 
 	* Configure the inbound endpoint, in this case a polling to fetch data from origin system
 	* Handle any input parameter and set the scope of it so the main logic does not care from where it is called
@@ -24,11 +24,13 @@ Here you should not:
 	* Run validations against external systems
 	* Choose flow of you application based on input parameters">
     	<poll doc:name="fireup account synchronization">
-            <fixed-frequency-scheduler frequency="${polling.frequency}" startDelay="${polling.start.delay}" />
+            <fixed-frequency-scheduler frequency="${poll.frequencyMillis}" startDelay="${poll.startDelayMillis}" />
             <watermark variable="lastQueryDate" default-expression="${watermark.default.expression}" selector="MAX" selector-expression="#[payload.LastModifiedDate]"/>
-             <sfdc:query config-ref="Salesforce" doc:name="query accounts from Salesforce" query="dsql:SELECT BillingCity, BillingStreet, LastModifiedDate, Name, NumberOfEmployees FROM Account WHERE LastModifiedDate &gt; #[lastQueryDate]" fetchSize="200">
+             <sfdc:query config-ref="Salesforce" doc:name="query accounts from Salesforce" query="dsql:SELECT BillingCity, BillingStreet, LastModifiedDate, Name, NumberOfEmployees FROM Account WHERE LastModifiedDate &gt; #[flowVars['lastQueryDate']]" fetchSize="200">
             </sfdc:query>
         </poll>
+        <logger message="lastQueryDate =&gt; #[flowVars.lastQueryDate]" level="INFO" doc:name="Logger"/>
+
         <flow-ref name="mainFlow" doc:name="call mainFlow"/>
     </flow>
 </mule>

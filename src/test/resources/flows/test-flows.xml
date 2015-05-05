@@ -2,14 +2,15 @@
 <mule xmlns:sfdc="http://www.mulesoft.org/schema/mule/sfdc"
 	xmlns:siebel="http://www.mulesoft.org/schema/mule/siebel" xmlns="http://www.mulesoft.org/schema/mule/core"
 	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
-	xmlns:spring="http://www.springframework.org/schema/beans" version="EE-3.5.0"
+	xmlns:spring="http://www.springframework.org/schema/beans" version="EE-3.6.1"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/siebel http://www.mulesoft.org/schema/mule/siebel/current/mule-siebel.xsd
 http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
 http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/sfdc http://www.mulesoft.org/schema/mule/sfdc/current/mule-sfdc.xsd">
 
-	<sub-flow name="insertSalesforceAccountSubFlow" doc:name="insertSalesforceAccountSubFlow">
+	<sub-flow name="insertSalesforceAccountSubFlow" >
+        <logger message="Inserting SFDC account: #[payload]" level="INFO" doc:name="Logger"/>
 		<sfdc:upsert config-ref="Salesforce" externalIdFieldName="Id"
 			type="Account" doc:name="Insert Account">
 			<sfdc:objects>
@@ -18,15 +19,17 @@ http://www.mulesoft.org/schema/mule/sfdc http://www.mulesoft.org/schema/mule/sfd
 				</sfdc:object>
 			</sfdc:objects>
 		</sfdc:upsert>
+        <logger message="Insert SFDC account result: #[payload]" level="INFO" doc:name="Logger"/>
 	</sub-flow>
 
-	<sub-flow name="deleteAccountFromSalesforceFlow" doc:name="deleteAccountFromSalesforceFlow">
+	<sub-flow name="deleteAccountFromSalesforceFlow" >
 		<sfdc:delete config-ref="Salesforce" doc:name="Salesforce">
 			<sfdc:ids ref="#[payload]" />
 		</sfdc:delete>
+        <logger message="Delete SFDC account result: #[payload]" level="INFO" doc:name="Logger"/>
 	</sub-flow>
 
-	<sub-flow name="selectAccountFromSiebelFlow" doc:name="selectAccountFromSiebelFlow">
+	<sub-flow name="selectAccountFromSiebelFlow" >
 		<siebel:query-business-components
 			config-ref="OracleSiebelBusinessObjects" businessObjectComponentType="Account.Account"
 			doc:name="query Accounts from Siebel" searchExpression="[Name] = &quot;#[payload.Name]&quot;">
@@ -35,13 +38,15 @@ http://www.mulesoft.org/schema/mule/sfdc http://www.mulesoft.org/schema/mule/sfd
 				<siebel:fields-to-retrieve>Name</siebel:fields-to-retrieve>
 			</siebel:fields-to-retrieve>
 		</siebel:query-business-components>
+        <logger message="Siebel account retrieval result: #[payload]" level="INFO" doc:name="Logger"/>
 	</sub-flow>
 
-	<sub-flow name="deleteAccountsFromSiebelFlow" doc:name="deleteAccountsFromSiebelFlow">
+	<sub-flow name="deleteAccountsFromSiebelFlow" >
 		<foreach doc:name="For Each">
 			<siebel:delete-business-component
 				config-ref="OracleSiebelBusinessObjects" businessComponentId="#[payload]"
 				businessObjectComponentType="Account.Account" doc:name="Oracle Siebel Business Objects" />
+            <logger message="Delete Siebel account result: #[payload]" level="INFO" doc:name="Logger"/>
 		</foreach>
 	</sub-flow>
 </mule>
