@@ -3,7 +3,6 @@
 <mule xmlns:json="http://www.mulesoft.org/schema/mule/json"
 	xmlns:siebel="http://www.mulesoft.org/schema/mule/siebel" 
 	xmlns:data-mapper="http://www.mulesoft.org/schema/mule/ee/data-mapper" 
-	xmlns:db="http://www.mulesoft.org/schema/mule/db"
 	xmlns:batch="http://www.mulesoft.org/schema/mule/batch"
 	xmlns:sfdc="http://www.mulesoft.org/schema/mule/sfdc"
 	xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking"
@@ -13,7 +12,6 @@
     version="EE-3.6.1"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/json/current/mule-json.xsd
-http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
 http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
 http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd
@@ -37,19 +35,17 @@ http://www.mulesoft.org/schema/mule/ee/data-mapper http://www.mulesoft.org/schem
 		                </siebel:fields-to-retrieve>
                     </siebel:query-business-components>
                 </enricher>
-                <logger message="Account: #[payload]" level="INFO" doc:name="Logger"/>
-					<expression-component
-						doc:name="prepare for upsert"><![CDATA[// setup ID
-	if (!(recordVars['siebelAccount'] instanceof NullPayload) && recordVars['siebelAccount'].size() >0) {
+
+            </batch:step>
+
+			<batch:step name="upsertAccountsInSiebelStep">
+                <expression-component doc:name="prepare for upsert"><![CDATA[// setup ID
+	if (!(recordVars['siebelAccount'] instanceof NullPayload) && recordVars['siebelAccount'].size() > 0) {
 		// Add siebel ID as it is an update
 	    payload.put('SiebelId', recordVars['siebelAccount'].get(0).get('Id'))
 	}
 	]]></expression-component>
-            </batch:step>
-            <batch:step name="DataTransformationStep">
-                <data-mapper:transform config-ref="DataMapper"  doc:name="transform Salesforce account to Siebel account"/>
-            </batch:step>
-			<batch:step name="upsertAccountsInSiebelStep">
+                <data-mapper:transform config-ref="DataMapper" doc:name="transform Salesforce account to Siebel account"/>
 		        <siebel:upsert-business-component config-ref="OracleSiebelBusinessObjects" businessObjectComponentType="Account.Account" doc:name="upsert account in Siebel">
 		            <siebel:business-component-fields ref="#[payload]"/>
 		        </siebel:upsert-business-component>

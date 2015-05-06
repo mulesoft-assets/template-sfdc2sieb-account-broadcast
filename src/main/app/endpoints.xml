@@ -2,7 +2,6 @@
 
 <mule xmlns:batch="http://www.mulesoft.org/schema/mule/batch"
       xmlns:sfdc="http://www.mulesoft.org/schema/mule/sfdc"
-      xmlns:http="http://www.mulesoft.org/schema/mule/http"
       xmlns="http://www.mulesoft.org/schema/mule/core"
       xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
       xmlns:spring="http://www.springframework.org/schema/beans"
@@ -11,8 +10,7 @@
       xsi:schemaLocation="http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/batch/current/mule-batch.xsd
 http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
 http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
-http://www.mulesoft.org/schema/mule/sfdc http://www.mulesoft.org/schema/mule/sfdc/current/mule-sfdc.xsd
-http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+http://www.mulesoft.org/schema/mule/sfdc http://www.mulesoft.org/schema/mule/sfdc/current/mule-sfdc.xsd">
 
 	<!-- 	In this file you should declare all your inbound endpoints and from here controll the access to your application -->
 
@@ -29,7 +27,6 @@ Here you should not:
              <sfdc:query config-ref="Salesforce" doc:name="query accounts from Salesforce" query="dsql:SELECT BillingCity, BillingStreet, LastModifiedDate, Name, NumberOfEmployees FROM Account WHERE LastModifiedDate &gt; #[flowVars['lastQueryDate']]" fetchSize="200">
             </sfdc:query>
         </poll>
-        <logger message="lastQueryDate =&gt; #[flowVars.lastQueryDate]" level="INFO" doc:name="Logger"/>
 
         <flow-ref name="mainFlow" doc:name="call mainFlow"/>
     </flow>
