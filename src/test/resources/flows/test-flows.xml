@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <mule xmlns:sfdc="http://www.mulesoft.org/schema/mule/sfdc"
-	xmlns:siebel="http://www.mulesoft.org/schema/mule/siebel" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:siebel="http://www.mulesoft.org/schema/mule/siebel" 
+	xmlns="http://www.mulesoft.org/schema/mule/core"
 	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
-	xmlns:spring="http://www.springframework.org/schema/beans" version="EE-3.6.1"
+	xmlns:spring="http://www.springframework.org/schema/beans" version="EE-3.6.2"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/siebel http://www.mulesoft.org/schema/mule/siebel/current/mule-siebel.xsd
 http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
