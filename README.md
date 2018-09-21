@@ -26,15 +26,15 @@ Note that using this template is subject to the conditions of this [License Agre
 Please review the terms of the license before downloading and using this template. In short, you are allowed to use the template for free with Mule ESB Enterprise Edition, CloudHub, or as a trial in Anypoint Studio.
 
 # Use Case <a name="usecase"/>
-As a Salesforce admin I want to syncronize Accounts between Salesfoce and Siebel.
+As a Salesforce admin I want to synchronize Accounts between Salesfoce and Siebel.
 
 This Template should serve as a foundation for setting an online sync of Accounts from one Salesforce instance to Siebel. Everytime there is a new Account or a change in an already existing one, the integration will poll for changes in Salesforce source instance and it will be responsible for updating the Account on the target Siebel instance.
 
 Requirements have been set not only to be used as examples, but also to establish a starting point to adapt your integration to your requirements.
 
 As implemented, this Template leverage the [Batch Module](http://www.mulesoft.org/documentation/display/current/Batch+Processing).
-The batch job is divided in Input, Process and On Complete stages.
-The integration is triggered by a poll defined in the flow that is going to trigger the application, querying newest Salesforce updates/creations matching a filter criteria and executing the batch job.
+The batch job is divided in  Process and On Complete stages.
+The integration is triggered by a scheduler defined in the flow that is going to trigger the application, querying newest Salesforce updates/creations matching a filter criteria and executing the batch job.
 During the Process stage, each Salesforce Account will be filtered depending on, if it has an existing matching account in the Siebel. The last step of the Process stage will group the Accounts and insert/update them in Siebel. Finally during the On Complete stage the Template will logoutput statistics data into the console.
 
 # Considerations <a name="considerations"/>
@@ -177,7 +177,7 @@ To use this Mule Anypoint Template you need to configure properties (Credentials
 
 # API Calls <a name="apicalls"/>
 Salesforce imposes limits on the number of API Calls that can be made. Therefore calculating this amount may be an important factor to consider. 
-This template uses just one query per poll period, therefore this is not something to worry about.
+This template uses just one query per scheduler period, therefore this is not something to worry about.
 
 
 # Customize It!<a name="customizeit"/>
@@ -209,7 +209,7 @@ Functional aspect of the Anypoint Template is implemented on this XML, directed 
 
 
 ## endpoints.xml<a name="endpointsxml"/>
-This is file is conformed by a Flow containing the Poll that will periodically query Salesforce for updated/created Accounts that meet the defined criteria in the query. And then executing the batch job process with the query results.
+This is file is conformed by a Flow containing the Scheduler that will periodically query Salesforce for updated/created Accounts that meet the defined criteria in the query. And then executing the batch job process with the query results.
 
 
 

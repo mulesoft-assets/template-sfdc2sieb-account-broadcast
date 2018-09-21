@@ -57,7 +57,7 @@ vars.account ++ {
 					</ee:transform>
 				</batch:step>
 				<batch:step name="UpsertAccountInSiebel" doc:id="78a74ab4-9b91-416d-985a-acda2ac377eb">
-					<ee:transform doc:name="Query for upsert"
+					<ee:transform doc:name="Data Account for upsert"
 						doc:id="9346c420-b5be-44dc-a7f0-111010740983">
 						<ee:message>
 							<ee:set-payload><![CDATA[%dw 2.0
