@@ -1,80 +1,59 @@
 
-# Anypoint Template: Salesforce to Siebel Account Broadcast
+# Anypoint Template: Salesforce to Siebel Account Broadcast	
 
-+ [License Agreement](#licenseagreement)
-+ [Use Case](#usecase)
-+ [Considerations](#considerations)
-	* [Salesforce Considerations](#salesforceconsiderations)
-	* [Siebel Considerations](#siebelconsiderations)
-+ [Run it!](#runit)
-	* [Running on premise](#runonopremise)
-	* [Running on Studio](#runonstudio)
-	* [Running on Mule ESB stand alone](#runonmuleesbstandalone)
-	* [Running on CloudHub](#runoncloudhub)
-	* [Deploying your Anypoint Template on CloudHub](#deployingyouranypointtemplateoncloudhub)
-	* [Properties to be configured (With examples)](#propertiestobeconfigured)
-+ [API Calls](#apicalls)
-+ [Customize It!](#customizeit)
-	* [config.xml](#configxml)
-	* [businessLogic.xml](#businesslogicxml)
-	* [endpoints.xml](#endpointsxml)
-	* [errorHandling.xml](#errorhandlingxml)
+<!-- Header (start) -->
 
+<!-- Header (end) -->
 
-# License Agreement <a name="licenseagreement"/>
-Note that using this template is subject to the conditions of this [License Agreement](AnypointTemplateLicense.pdf).
-Please review the terms of the license before downloading and using this template. In short, you are allowed to use the template for free with Mule ESB Enterprise Edition, CloudHub, or as a trial in Anypoint Studio.
-
-# Use Case <a name="usecase"/>
-As a Salesforce admin I want to synchronize Accounts between Salesfoce and Siebel.
+# License Agreement
+This template is subject to the conditions of the <a href="https://s3.amazonaws.com/templates-examples/AnypointTemplateLicense.pdf">MuleSoft License Agreement</a>. Review the terms of the license before downloading and using this template. You can use this template for free with the Mule Enterprise Edition, CloudHub, or as a trial in Anypoint Studio. 
+# Use Case
+<!-- Use Case (start) -->
+As a Salesforce admin I want to syncronize Accounts between Salesfoce and Siebel.
 
 This Template should serve as a foundation for setting an online sync of Accounts from one Salesforce instance to Siebel. Everytime there is a new Account or a change in an already existing one, the integration will poll for changes in Salesforce source instance and it will be responsible for updating the Account on the target Siebel instance.
 
 Requirements have been set not only to be used as examples, but also to establish a starting point to adapt your integration to your requirements.
 
 As implemented, this Template leverage the [Batch Module](http://www.mulesoft.org/documentation/display/current/Batch+Processing).
-The batch job is divided in  Process and On Complete stages.
-The integration is triggered by a scheduler defined in the flow that is going to trigger the application, querying newest Salesforce updates/creations matching a filter criteria and executing the batch job.
+The batch job is divided in Input, Process and On Complete stages.
+The integration is triggered by a poll defined in the flow that is going to trigger the application, querying newest Salesforce updates/creations matching a filter criteria and executing the batch job.
 During the Process stage, each Salesforce Account will be filtered depending on, if it has an existing matching account in the Siebel. The last step of the Process stage will group the Accounts and insert/update them in Siebel. Finally during the On Complete stage the Template will logoutput statistics data into the console.
+<!-- Use Case (end) -->
 
-# Considerations <a name="considerations"/>
+# Considerations
+<!-- Default Considerations (start) -->
 
+<!-- Default Considerations (end) -->
+
+<!-- Considerations (start) -->
 To make this Anypoint Template run, there are certain preconditions that must be considered. All of them deal with the preparations in both source (Salesforce) and destination (Siebel) systems, that must be made in order for all to run smoothly. 
 **Failing to do so could lead to unexpected behavior of the template.**
+<!-- Considerations (end) -->
 
 
 
-## Salesforce Considerations <a name="salesforceconsiderations"/>
+## Salesforce Considerations
 
-There may be a few things that you need to know regarding Salesforce for this template to work.
+Here's what you need to know about Salesforce to get this template to work:
 
-To have this template work as expected, you should be aware of your own Salesforce field configuration.
+- Where can I check that the field configuration for my Salesforce instance is the right one? See: <a href="https://help.salesforce.com/HTViewHelpDoc?id=checking_field_accessibility_for_a_particular_field.htm&language=en_US">Salesforce: Checking Field Accessibility for a Particular Field</a>.
+- Can I modify the Field Access Settings? How? See: <a href="https://help.salesforce.com/HTViewHelpDoc?id=modifying_field_access_settings.htm&language=en_US">Salesforce: Modifying Field Access Settings</a>.
 
-### FAQ
+### As a Data Source
 
- - Where can I check that the field configuration for my Salesforce instance is the right one?
-
-    [Salesforce: Checking Field Accessibility for a Particular Field][1]
-
-- Can I modify the Field Access Settings? How?
-
-    [Salesforce: Modifying Field Access Settings][2]
-
-
-[1]: https://help.salesforce.com/HTViewHelpDoc?id=checking_field_accessibility_for_a_particular_field.htm&language=en_US
-[2]: https://help.salesforce.com/HTViewHelpDoc?id=modifying_field_access_settings.htm&language=en_US
-
-### As source of data
-
-If the user configured in the template for the source system does not have at least *read only* permissions for the fields that are fetched, then an *InvalidFieldFault* API fault displays.
+If the user who configured the template for the source system does not have at least *read only* permissions for the fields that are fetched, then an *InvalidFieldFault* API fault displays.
 
 ```
-java.lang.RuntimeException: [InvalidFieldFault [ApiQueryFault [ApiFault  exceptionCode='INVALID_FIELD'
-exceptionMessage='
-Account.Phone, Account.Rating, Account.RecordTypeId, Account.ShippingCity
+java.lang.RuntimeException: [InvalidFieldFault [ApiQueryFault 
+[ApiFault  exceptionCode='INVALID_FIELD'
+exceptionMessage='Account.Phone, Account.Rating, Account.RecordTypeId, 
+Account.ShippingCity
 ^
 ERROR at Row:1:Column:486
-No such column 'RecordTypeId' on entity 'Account'. If you are attempting to use a custom field, be sure to append the '__c' after the custom field name. Reference your WSDL or the describe call for the appropriate names.'
+No such column 'RecordTypeId' on entity 'Account'. If you are attempting to 
+use a custom field, be sure to append the '__c' after the custom field name. 
+Reference your WSDL or the describe call for the appropriate names.'
 ]
 row='1'
 column='486'
@@ -83,17 +62,14 @@ column='486'
 ```
 
 
-## Siebel Considerations <a name="siebelconsiderations"/>
+## Oracle Siebel Considerations
 
-There may be a few things that you need to know regarding Siebel for this template to work.
+Here's what you need to know to get this template to work with Oracle Siebel.
 
-This Anypoint Template may be using date time/timestamp fields from the Siebel to do comparisons and take further actions.
-While the template handles the time zone by sending all such fields in a neutral time zone, it cannot discover the time zone in which the Siebel instance is on.
-It is up to the user of this template to provide such information. For more about Siebel time zones, see [link](http://docs.oracle.com/cd/B40099_02/books/Fundamentals/Fund_settingoptions3.html)
+This template uses date time or timestamp fields from Oracle Siebel to do comparisons and take further actions. While the template handles the time zone by sending all such fields in a neutral time zone, it cannot discover the time zone in which the Siebel instance is on. It's up to you to provide this information. See [Oracle's Setting Time Zone Preferences](http://docs.oracle.com/cd/B40099_02/books/Fundamentals/Fund_settingoptions3.html).
 
 
-
-### As destination of data
+### As a Data Destination
 
 In order to make the siebel connector work smoothly you have to provide the correct version of the siebel jars (Siebel.jar, SiebelJI_enu.jar) that works with your Siebel installation.
 
@@ -104,57 +80,69 @@ In order to make the siebel connector work smoothly you have to provide the corr
 
 
 
-# Run it! <a name="runit"/>
-Simple steps to get Salesforce to Siebel Account Broadcast running.
+# Run it!
+Simple steps to get this template running.
+<!-- Run it (start) -->
 See below.
+<!-- Run it (end) -->
 
-## Running on premise <a name="runonopremise"/>
-In this section we detail the way you should run your Anypoint Template on your computer.
+## Running On Premises
+In this section we help you run this template on your computer.
+<!-- Running on premise (start) -->
 
+<!-- Running on premise (end) -->
 
-### Where to Download Mule Studio and Mule ESB
-First thing to know if you are a newcomer to Mule is where to get the tools.
+### Where to Download Anypoint Studio and the Mule Runtime
+If you are new to Mule, download this software:
 
-+ You can download Anypoint Studio from this [location](https://www.mulesoft.com/lp/dl/studio)
-+ You can download Mule runtime from this [location](https://www.mulesoft.com/platform/mule)
++ [Download Anypoint Studio](https://www.mulesoft.com/platform/studio)
++ [Download Mule runtime](https://www.mulesoft.com/lp/dl/mule-esb-enterprise)
 
+**Note:** Anypoint Studio requires JDK 8.
+<!-- Where to download (start) -->
 
-### Importing an Anypoint Template into Studio
-Anypoint Studio offers several ways to import a project into the workspace, for instance: 
+<!-- Where to download (end) -->
 
-+ Anypoint Studio Project from a file system
-+ Packaged Mule application (.jar)
+### Importing a Template into Studio
+In Studio, click the Exchange X icon in the upper left of the taskbar, log in with your Anypoint Platform credentials, search for the template, and click Open.
+<!-- Importing into Studio (start) -->
 
-You can find a detailed description on how to do so in this [documentation page](https://docs.mulesoft.com/).
+<!-- Importing into Studio (end) -->
 
+### Running on Studio
+After you import your template into Anypoint Studio, follow these steps to run it:
 
-### Running on Studio <a name="runonstudio"/>
-Once you have imported you Anypoint Template into Anypoint Studio you need to follow these steps to run it:
++ Locate the properties file `mule.dev.properties`, in src/main/resources.
++ Complete all the properties required as per the examples in the "Properties to Configure" section.
++ Right click the template project folder.
++ Hover your mouse over `Run as`.
++ Click `Mule Application (configure)`.
++ Inside the dialog, select Environment and set the variable `mule.env` to the value `dev`.
++ Click `Run`.
+<!-- Running on Studio (start) -->
 
-+ Locate the properties file `mule.dev.properties`, in src/main/resources
-+ Complete all the properties required as per the examples in the section [Properties to be configured](#propertiestobeconfigured)
-+ Once that is done, right click the Anypoint Template project folder 
-+ Hover your mouse over `"Run as"`
-+ Click `"Mule Application (configure)"`
-+ Inside the dialog, select Environment and set the variable `"mule.env"` to the value `"dev"`
-+ Click `"Run"`
+<!-- Running on Studio (end) -->
 
-
-### Running on Mule ESB stand alone <a name="runonmuleesbstandalone"/>
-Complete all properties in one of the property files, for example in [mule.prod.properties] (../master/src/main/resources/mule.prod.properties) and run your app with the corresponding environment variable to use it. To follow the example, this will be `mule.env=prod`. 
-
-
-## Running on CloudHub <a name="runoncloudhub"/>
-While [creating your application on CloudHub](https://docs.mulesoft.com/runtime-manager/) (Or you can do it later as a next step), you need to go to Deployment > Advanced to set all environment variables detailed in **Properties to be configured** as well as the **mule.env**.
-
-
-### Deploying your Anypoint Template on CloudHub <a name="deployingyouranypointtemplateoncloudhub"/>
-Studio provides an easy way to deploy your template directly to CloudHub, for the specific steps to do so check this [link](https://docs.mulesoft.com/runtime-manager/deployment-strategies)
+### Running on Mule Standalone
+Update the properties in one of the property files, for example in mule.prod.properties, and run your app with a corresponding environment variable. In this example, use `mule.env=prod`. 
 
 
-## Properties to be configured (With examples) <a name="propertiestobeconfigured"/>
-To use this Mule Anypoint Template you need to configure properties (Credentials, configurations, etc.) either in properties file or in CloudHub as Environment Variables. Detail list with examples:
-### Application configuration
+## Running on CloudHub
+When creating your application in CloudHub, go to Runtime Manager > Manage Application > Properties to set the environment variables listed in "Properties to Configure" as well as the mule.env value.
+<!-- Running on Cloudhub (start) -->
+
+<!-- Running on Cloudhub (end) -->
+
+### Deploying a Template in CloudHub
+In Studio, right click your project name in Package Explorer and select Anypoint Platform > Deploy on CloudHub.
+<!-- Deploying on Cloudhub (start) -->
+
+<!-- Deploying on Cloudhub (end) -->
+
+## Properties to Configure
+To use this template, configure properties such as credentials, configurations, etc.) in the properties file or in CloudHub from Runtime Manager > Manage Application > Properties. The sections that follow list example values.
+### Application Configuration
+<!-- Application Configuration (start) -->
 **Application configuration**
 + page.size `10`
 + scheduler.frequency `60000`
@@ -174,48 +162,60 @@ To use this Mule Anypoint Template you need to configure properties (Credentials
 + sieb.serverName=`serverName`
 + sieb.objectManager=`objectManager`
 + sieb.port=`2321`
+<!-- Application Configuration (end) -->
 
-# API Calls <a name="apicalls"/>
+# API Calls
+<!-- API Calls (start) -->
 Salesforce imposes limits on the number of API Calls that can be made. Therefore calculating this amount may be an important factor to consider. 
-This template uses just one query per scheduler period, therefore this is not something to worry about.
+This template uses just one query per poll period, therefore this is not something to worry about.
+<!-- API Calls (end) -->
 
+# Customize It!
+This brief guide provides a high level understanding of how this template is built and how you can change it according to your needs. As Mule applications are based on XML files, this page describes the XML files used with this template. More files are available such as test classes and Mule application files, but to keep it simple, we focus on these XML files:
 
-# Customize It!<a name="customizeit"/>
-This brief guide intends to give a high level idea of how this Anypoint Template is built and how you can change it according to your needs.
-As Mule applications are based on XML files, this page is organized by describing all the XML that conform the Anypoint Template.
-Of course more files can be found such as test classes and Mule application files, but to keep it simple, we focus on the XMLs.
+* config.xml
+* businessLogic.xml
+* endpoints.xml
+* errorHandling.xml<!-- Customize it (start) -->
 
-Here is a list of the main XML files you can find in this application:
+<!-- Customize it (end) -->
 
-* [config.xml](#configxml)
-* [endpoints.xml](#endpointsxml)
-* [businessLogic.xml](#businesslogicxml)
-* [errorHandling.xml](#errorhandlingxml)
+## config.xml
+<!-- Default Config XML (start) -->
+This file provides the configuration for connectors and configuration properties. Only change this file to make core changes to the connector processing logic. Otherwise, all parameters that can be modified should instead be in a properties file, which is the recommended place to make changes.<!-- Default Config XML (end) -->
 
+<!-- Config XML (start) -->
 
-## config.xml<a name="configxml"/>
-Configuration for Connectors and [Configuration Properties](https://docs.mulesoft.com/mule4-user-guide/v/4.1/configuring-properties) are set in this file. **Even you can change the configuration here, all parameters that can be modified here are in properties file, and this is the recommended place to do it so.** Of course if you want to do core changes to the logic you will probably need to modify this file.
+<!-- Config XML (end) -->
 
-In the visual editor, they can be found on the *Global Element* tab.
-
-
-## businessLogic.xml<a name="businesslogicxml"/>
+## businessLogic.xml
+<!-- Default Business Logic XML (start) -->
 Functional aspect of the Anypoint Template is implemented on this XML, directed by a batch job that will be responsible for creations/updates. The severeal message processors constitute four high level actions that fully implement the logic of this Anypoint Template:
 
 1. Job execution is invoked from triggerFlow (endpoints.xml) everytime there is a new query executed asking for created/updated Accounts.
 2. During the Process stage, each Salesforce Account will be filtered depending on, if it has an existing matching Account in the Siebel.
-3. The last step of the Process stage will group the Accounts and create/update them in Siebel. Finally during the On Complete stage the Anypoint Template will log output statistics data into the console.
+3. The last step of the Process stage will group the Accounts and create/update them in Siebel. Finally during the On Complete stage the Anypoint Template will log output statistics data into the console.<!-- Default Business Logic XML (end) -->
 
+<!-- Business Logic XML (start) -->
 
+<!-- Business Logic XML (end) -->
 
-## endpoints.xml<a name="endpointsxml"/>
-This is file is conformed by a Flow containing the Scheduler that will periodically query Salesforce for updated/created Accounts that meet the defined criteria in the query. And then executing the batch job process with the query results.
+## endpoints.xml
+<!-- Default Endpoints XML (start) -->
+This is file is conformed by a Flow containing the Poll that will periodically query Salesforce for updated/created Accounts that meet the defined criteria in the query. And then executing the batch job process with the query results.<!-- Default Endpoints XML (end) -->
 
+<!-- Endpoints XML (start) -->
 
+<!-- Endpoints XML (end) -->
 
-## errorHandling.xml<a name="errorhandlingxml"/>
-This is the right place to handle how your integration will react depending on the different exceptions. 
-This file provides [Error Handling](https://docs.mulesoft.com/mule4-user-guide/v/4.1/error-handling) that is referenced by the main flow in the business logic.
+## errorHandling.xml
+<!-- Default Error Handling XML (start) -->
+This file handles how your integration reacts depending on the different exceptions. This file provides error handling that is referenced by the main flow in the business logic.<!-- Default Error Handling XML (end) -->
 
+<!-- Error Handling XML (start) -->
 
+<!-- Error Handling XML (end) -->
 
+<!-- Extras (start) -->
+
+<!-- Extras (end) -->
