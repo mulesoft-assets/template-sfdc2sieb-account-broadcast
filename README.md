@@ -11,14 +11,14 @@ This template is subject to the conditions of the <a href="https://s3.amazonaws.
 <!-- Use Case (start) -->
 As a Salesforce admin I want to syncronize Accounts between Salesfoce and Siebel.
 
-This Template should serve as a foundation for setting an online sync of Accounts from one Salesforce instance to Siebel. Everytime there is a new Account or a change in an already existing one, the integration will poll for changes in Salesforce source instance and it will be responsible for updating the Account on the target Siebel instance.
+This template serves as a foundation for setting an online sync of Accounts from one Salesforce instance to Siebel. Everytime there is a new Account or a change in an already existing one, the integration will poll for changes in Salesforce source instance and it will be responsible for updating the Account on the target Siebel instance.
 
 Requirements have been set not only to be used as examples, but also to establish a starting point to adapt your integration to your requirements.
 
-As implemented, this Template leverage the [Batch Module](http://www.mulesoft.org/documentation/display/current/Batch+Processing).
+As implemented, this Template leverage the Mule batch module.
 The batch job is divided in Input, Process and On Complete stages.
 The integration is triggered by a poll defined in the flow that is going to trigger the application, querying newest Salesforce updates/creations matching a filter criteria and executing the batch job.
-During the Process stage, each Salesforce Account will be filtered depending on, if it has an existing matching account in the Siebel. The last step of the Process stage will group the Accounts and insert/update them in Siebel. Finally during the On Complete stage the Template will logoutput statistics data into the console.
+During the Process stage, each Salesforce Account is filtered depending on if it has an existing matching account in the Siebel. The last step of the Process stage groups the Accounts and inserts or updates them in Siebel. Finally during the On Complete stage the Template logsoutput statistics data into the console.
 <!-- Use Case (end) -->
 
 # Considerations
@@ -27,7 +27,7 @@ During the Process stage, each Salesforce Account will be filtered depending on,
 <!-- Default Considerations (end) -->
 
 <!-- Considerations (start) -->
-To make this Anypoint Template run, there are certain preconditions that must be considered. All of them deal with the preparations in both source (Salesforce) and destination (Siebel) systems, that must be made in order for all to run smoothly. 
+To make this template run, there are certain preconditions that must be considered. All of them deal with the preparations in both source (Salesforce) and destination (Siebel) systems, that must be made for the template to run smoothly. 
 **Failing to do so could lead to unexpected behavior of the template.**
 <!-- Considerations (end) -->
 
@@ -143,19 +143,19 @@ In Studio, right click your project name in Package Explorer and select Anypoint
 To use this template, configure properties such as credentials, configurations, etc.) in the properties file or in CloudHub from Runtime Manager > Manage Application > Properties. The sections that follow list example values.
 ### Application Configuration
 <!-- Application Configuration (start) -->
-**Application configuration**
+**Application Configuration**
 + page.size `10`
 + scheduler.frequency `60000`
 + scheduler.start.delay `1000`
 + watermark.default.expression `2018-01-10T15:53:00Z`
 
 
-**Salesforce Connector configuration**
+**Salesforce Connector Configuration**
 + sfdc.username `bob.dylan@orga`
 + sfdc.password `DylanPassword123`
 + sfdc.securityToken `avsfwCUl7apQs56Xq2AKi3X`
 
-**Oracle Siebel Connector configuration**
+**Oracle Siebel Connector Configuration**
 + sieb.user=`user`
 + sieb.password=`secret`
 + sieb.server=`server`
@@ -190,11 +190,11 @@ This file provides the configuration for connectors and configuration properties
 
 ## businessLogic.xml
 <!-- Default Business Logic XML (start) -->
-Functional aspect of the Anypoint Template is implemented on this XML, directed by a batch job that will be responsible for creations/updates. The severeal message processors constitute four high level actions that fully implement the logic of this Anypoint Template:
+Functional aspect of the template is implemented on this XML, directed by a batch job that will be responsible for creations/updates. The severeal message processors constitute four high level actions that fully implement the logic of this template:
 
 1. Job execution is invoked from triggerFlow (endpoints.xml) everytime there is a new query executed asking for created/updated Accounts.
-2. During the Process stage, each Salesforce Account will be filtered depending on, if it has an existing matching Account in the Siebel.
-3. The last step of the Process stage will group the Accounts and create/update them in Siebel. Finally during the On Complete stage the Anypoint Template will log output statistics data into the console.<!-- Default Business Logic XML (end) -->
+2. During the Process stage, each Salesforce Account is filtered depending on if it has an existing matching Account in the Siebel.
+3. The last step of the Process stage groups the Accounts and create/update them in Siebel. Finally during the On Complete stage the template logs output statistics data into the console.<!-- Default Business Logic XML (end) -->
 
 <!-- Business Logic XML (start) -->
 
