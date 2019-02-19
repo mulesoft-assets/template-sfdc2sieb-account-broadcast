@@ -99,9 +99,17 @@ output application/java
 	<munit:test name="test-suite-mainFlowTest" description="Test">
 		<munit:execution>
 			<flow-ref doc:name="Flow-ref to queryFlow" name="queryFlow" />
+			<ee:transform doc:name="Transform Message" doc:id="228ad647-c13a-408a-926b-9933123ae89a" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+payload filter (startsWith($.Name, "TestRecord"))]]></ee:set-payload>
+				</ee:message>
+			</ee:transform>
 			<flow-ref doc:name="Flow-ref to businessLogicFlow" doc:id="b0e82a46-36e9-4bcf-8ea1-23337852263f" name="businessLogicFlow"/>
-			<scripting:execute doc:name="Sleep for 15s until the processing is completed" engine="groovy">
-				<scripting:code>sleep(15000)</scripting:code>
+			<scripting:execute doc:name="Sleep for 60s until the processing is completed" engine="groovy">
+				<scripting:code>sleep(60000)</scripting:code>
 			</scripting:execute>
 			<flow-ref doc:name="Flow Reference testRecord2" name="testRecord2" />
 			<flow-ref doc:name="Flow Reference testRecord1" name="testRecord1" />
