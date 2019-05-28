@@ -26,7 +26,7 @@ http://www.mulesoft.org/schema/mule/siebel http://www.mulesoft.org/schema/mule/s
 output application/java
 var id= randomInt(1000)
 ---
-{	
+{
 	Name: "TestRecord" ++ id,
 	Employees: 6000,
 }
@@ -35,7 +35,7 @@ var id= randomInt(1000)
 output application/java
 var id= randomInt(1000)
 ---
-{		
+{
 	Name: "TestRecord" ++ id,
 	Employees: 7000,
 }
@@ -45,7 +45,7 @@ var id= randomInt(1000)
 output application/java
 var id= randomInt(1000)
 ---
-{		
+{
 	Name: "TestRecord" ++ id,
 	Employees: 4000,
 }
@@ -54,7 +54,7 @@ var id= randomInt(1000)
 output application/java
 var id= randomInt(1000)
 ---
-{		
+{
 	Name: "TestRecord" ++ id,
 	Employees: 10000,
 }
@@ -113,12 +113,12 @@ payload filter (startsWith($.Name, "TestRecord"))]]></ee:set-payload>
 			</scripting:execute>
 			<flow-ref doc:name="Flow Reference testRecord2" name="testRecord2" />
 			<flow-ref doc:name="Flow Reference testRecord1" name="testRecord1" />
-			
+
 		</munit:execution>
 		<munit:validation>
 			<munit-tools:assert-that doc:name="Assert test migrated testRecord1" expression="#[vars.resultTestRecord1]"
-				is="#[MunitTools::equalTo(1)]" />
-			<munit-tools:assert-that doc:name="Assert test updated testRecord2" expression="#[vars.resultTestRecord2]" is="#[MunitTools::equalTo(true)]" />
+				is="#[MunitTools::equalTo(1)]" message="Assert test didnt migrate testRecord1"/>
+			<munit-tools:assert-that doc:name="Assert test updated testRecord2" expression="#[vars.resultTestRecord2]" is="#[MunitTools::equalTo(true)]" message="Assert test did not updated testRecord2"/>
 		</munit:validation>
 	</munit:test>
 	<sub-flow name="testRecord1">
@@ -132,7 +132,7 @@ output application/java
 		"ListOfAccount IO": [{
 			Account: {
 				searchspec: "[Name] = '" ++ vars.testInterpreter1.Name ++ "'"
-				
+
 			}
 		}]
 	}
@@ -155,7 +155,7 @@ output application/java
 		"ListOfAccount IO": [{
 			Account: {
 				searchspec: "[Name] = '" ++ vars.testInterpreter2.Name ++ "'"
-				
+
 			}
 		}]
 	}
