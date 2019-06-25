@@ -35,7 +35,7 @@ http://www.mulesoft.org/schema/mule/siebel http://www.mulesoft.org/schema/mule/s
 	<flow name="queryFlow">
 		<os:retrieve key="watermark" objectStore="watermarkStore"
 			target="lastQueryTimestamp" doc:name="Retrieve lastQueryTimestamp">
-			<os:default-value ><![CDATA[#[read(p(‘watermark.default.expression’))]]]></os:default-value>
+			<os:default-value ><![CDATA[#[read(p(watermark.default.expression))]]]></os:default-value>
 		</os:retrieve>
 		<salesforce:query doc:name="query accounts from Salesforce"
 			doc:id="f1d60e5c-beb3-4c03-b2e8-0e65f59af1ef" config-ref="Salesforce_Config">
